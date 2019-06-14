@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="atten">
+	<!-- <select id="allList" resultType="sr.attend.model.AttenDTO">
+		select a.lecture_num p.id, p.name from atten_bd a, person p
+	</select> -->
+	<select id="allList" resultType="sr.attend.model.AttenDTO">
+		select distinct lecture_num from atten_bd
+	</select>
+	
+	<!--강의번호로 조회  -->
+	<select id="lecturelist" resultType="sr.attend.model.AttenDTO" parameterType="int">
+		select * from atten_bd where lecture_num=#{lecture_num}
+	</select>
+	
+	<!--출석부 입력  -->
+	<insert id="Insert">
+		insert into atten_bd (lecture_num, id, now_checkin, max_checkin) values(#{lecture_num}, #{id}, #{max_checkin}, #{now_checkin})
+	</insert>
+	
+	<!--출석 체크  -->
+	<!-- <update id="check">
+		update atten_bd set day1=#{day1} where id=#{id} and lecture_num#{lecture_num}
+	</update> -->
+	
+	<!--출석 체크  -->
+	<update id="check" parameterType="sr.attend.model.AttenDTO">
+		update atten_bd
+		 <set>
+		 	<if test="day1 != null">day1=#{day1}</if>
+		 	<if test="day2 != null">day2=#{day2}</if>
+		 	<if test="day3 != null">day3=#{day3}</if>
+		 	<if test="day4 != null">day4=#{day4}</if>
+		 	<if test="day5 != null">day5=#{day5}</if>
+		 	<if test="day6 != null">day6=#{day6}</if>
+		 	<if test="day7 != null">day7=#{day7}</if>
+		 	<if test="day8 != null">day8=#{day8}</if>
+		 	<if test="day9 != null">day9=#{day9}</if>
+		 	<if test="day10 != null">day10=#{day10}</if>
+		 	<if test="day11 != null">day11=#{day11}</if>
+		 	<if test="day12 != null">day12=#{day12}</if>
+		 	<if test="day13 != null">day13=#{day13}</if>
+		 	<if test="day14 != null">day14=#{day14}</if>
+		 	<if test="day15 != null">day15=#{day15}</if>
+		 	<if test="day16 != null">day16=#{day16}</if>
+		 	<if test="day17 != null">day17=#{day17}</if>
+		 	<if test="day18 != null">day18=#{day18}</if>
+		 	<if test="day19 != null">day19=#{day19}</if>
+		 	<if test="day20 != null">day20=#{day20}</if>
+		 	<if test="day21 != null">day21=#{day21}</if>
+		 	<if test="day22 != null">day22=#{day22}</if>
+		 	<if test="day23 != null">day23=#{day23}</if>
+		 	<if test="day24 != null">day24=#{day24}</if>
+		 	<if test="day25 != null">day25=#{day25}</if>
+		 	<if test="day26 != null">day26=#{day26}</if>
+		 	<if test="day27 != null">day27=#{day27}</if>
+		 	<if test="day28 != null">day28=#{day28}</if>
+		 	<if test="day29 != null">day29=#{day29}</if>
+		 	<if test="day30 != null">day30=#{day30}</if>
+		 	<if test="day31 != null">day31=#{day31}</if>
+		 </set>
+		 where id=#{id} and lecture_num=#{lecture_num}
+	</update>
+</mapper>

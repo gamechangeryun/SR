@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="scoreinputMapper">
+	<select id="allList" resultType="sr.scoreinput.model.ScoreinputDTO">
+		select s.lecture_num, s.score, p.name, p.id from scoreinputncheck s, person p
+	</select>
+	
+	<select id="selcetList" parameterType="sr.scoreinput.model.ScoreinputDTO" resultType="sr.scoreinput.model.ScoreinputDTO">
+		select s.lecture_num, s.score, p.name, p.id from from scoreinputncheck s, person p where s.lecture_num=#{lecture_num} and p.name like '%'||#{name}||'%'
+	</select>
+	
+	<!-- <insert id="input" parameterType="sr.scoreinput.model.ScoreinputDTO">
+		insert into scoreinputncheck values(#{lecture_num}, #{studentnum}, #{student_name}, #{score})
+	</insert> -->
+	
+	<!--성적입력 한번에  -->
+	<update id="inputscore" parameterType="sr.scoreinput.model.ScoreinputDtoList">
+		update scoreinputncheck s, person p set score=#{score} where p.id=#{id} and s.lecture_num=#{lecture_num}
+	</update>
+	
+	<select id="sname" parameterType="string" resultType="sr.scoreinput.model.ScoreinputDTO">
+		select s.lecture_num, s.score, p.name, p.id from scoreinputncheck s, person p where s.lecture_num=#{lecture_num} 
+	</select>	
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<context:component-scan base-package="sr_controller,sr_service,sr_model,sr.pro.controller,sr.pro.model,sr.pro.service,sr.pro.notice.controller,sr.pro.notice.model,sr.pro.notice.service,sr.learn.service,sr.learn.model,sr.learn.controller,sr.scoreinput.controller,sr.scoreinput.model,sr.scoreinput.service,
+	sr.changescoreinput.controller,sr.changescoreinput.model,sr.changescoreinput.service,sr.tuition.controller,sr.tuition.model,sr.tuition.service,sr.attend.controller,sr.attend.model,sr.attend.service" />
+	<context:property-placeholder location="classpath:db.properties" />
+	
+	<!-- 의존성 주입을 위해서 선언해준다. -->
+	<context:annotation-config />
+	       
+	<!-- 커넥션 풀 생성 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${driver}"></property>
+		<property name="jdbcUrl"  value="${url}"></property>
+		<property name="user"  value="${user}"></property>
+		<property name="password"  value="${pwd}"></property>
+	</bean>	
+	
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:config.xml" />
+		<!-- 커넥션풀 사용 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 사용할 메퍼파일 지정 -->
+		<property name="mapperLocations" value="classpath:mybatis/*.xml" />
+	</bean>	
+
+	<bean id="attenDAO" class="sr.attend.model.AttenDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="tuitionDAO" class="sr.tuition.model.TuitionDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="changescoreinputDAO" class="sr.changescoreinput.model.ChangescoreinputDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="scoreinputDAO" class="sr.scoreinput.model.ScoreinputDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="learnDAO" class="sr.learn.model.LearnDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="commentDAO" class="sr_model.CommentDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="mtDAO" class="sr_model.MtDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="requestDAO" class="sr_model.requestDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="proDAO" class="sr.pro.model.ProDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="pronoticeDAO" class="sr.pro.notice.model.PronoticeDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	
+	<!-- 전달받은 view경로 값과 id가 같은 뷰를 찾아야 하기 떄문에 직접 빈으로 생성해준다. ==> render를 실행한다. -->
+    <bean id="download" class="sr_service.MtDownView" />
+       
+	<!-- 뷰리졸버 먼저 수행시키기 -->
+	<bean id="viewResolver1" class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+	
+	<!-- 경로지정  view Resolver -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       	<property name="prefix" value="/WEB-INF/view/" />	<!-- 앞에붙인다 -->
+       	<property name="suffix" value=".jsp" />				<!-- 뒤에붙인다 -->
+    </bean>
+    
+    <!-- ================== -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	   	<property name="basenames">
+	   		<list>
+	   			<value>message.validation</value>
+	   		</list>
+	   	</property>
+	</bean>
+	
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<!-- @ResponseBody로 String처리할때 한글처리 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 파일업로드를 위해서 필요하다. -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	
+       
+</beans>
